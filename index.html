@@ -3,76 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seyit'in 2025 Wrapped</title>
+    <title>Seyit'in 2025 Wrapped (Yenilendi)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --spotify-green: #1DB954;
+            --dark-purple: #1a0033;
+            --deep-black: #000000;
+        }
+
         body {
             margin: 0;
             padding: 0;
             height: 100vh;
-            background-color: #000; /* Siyah arka plan, 2025 Wrapped stili */
+            /* Daha dinamik, gece gökyüzü temalı bir degrade */
+            background: radial-gradient(circle at top left, #360057 0%, transparent 60%),
+                        radial-gradient(circle at bottom right, #001f3f 0%, transparent 60%),
+                        linear-gradient(135deg, var(--deep-black), var(--dark-purple), #0a0014);
             color: #fff;
-            font-family: 'Circular Std', 'Arial', sans-serif; /* Spotify fontuna yakın */
+            font-family: 'Montserrat', sans-serif; /* Ana metin için */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .slides-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            overflow: hidden;
+            opacity: 0;
+            /* Geçiş animasyonunu daha belirgin hale getir */
+            transition: opacity 1.2s ease-in-out; 
+            padding: 20px;
+            box-sizing: border-box;
         }
-        .wrapped-container {
-            max-width: 80%;
-            padding: 40px;
+        .slide.active {
+            opacity: 1;
+        }
+        .spotify-logo {
+            width: 160px;
+            margin-bottom: 30px;
+            /* Hafif bir dönme/parlama animasyonu */
+            animation: pulse 2s infinite, glow-pulse 2s infinite alternate;
+            border-radius: 50%; /* Logoyu yuvarlak bir vurgu içine al */
+            box-shadow: 0 0 30px rgba(29, 185, 84, 0.5); /* Hafif yeşil parıltı */
         }
         h1 {
-            font-size: 48px;
-            font-weight: 900;
-            margin-bottom: 20px;
+            font-family: 'Oswald', sans-serif; /* Başlık için dikkat çekici font */
+            font-size: 80px;
+            font-weight: 700;
+            margin: 20px 0 40px;
             text-transform: uppercase;
+            /* Neon efekti */
+            text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px var(--spotify-green);
+            letter-spacing: 5px;
         }
         .big-text {
-            font-size: 72px;
-            font-weight: bold;
-            margin: 40px 0;
-            line-height: 1.2;
+            font-size: 70px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin: 30px 0;
+            max-width: 90%;
         }
         .highlight {
-            color: #1DB954; /* Spotify yeşili accent */
-            font-size: 96px;
+            color: var(--spotify-green);
+            font-size: 90px;
+            /* Daha güçlü bir neon efekti */
+            text-shadow: 0 0 8px #fff, 0 0 15px var(--spotify-green), 0 0 25px var(--spotify-green);
         }
         p {
             font-size: 32px;
             margin: 20px 0;
+            max-width: 90%;
+            font-weight: 400;
+            opacity: 0.9;
         }
         .footer {
             margin-top: 60px;
             font-size: 24px;
-            opacity: 0.8;
+            opacity: 0.7;
+            font-style: italic;
         }
-        .spotify-logo {
-            width: 150px;
-            margin-bottom: 40px;
+        .hand-emoji {
+            font-size: 100px;
+            margin: 20px 0;
+            animation: bounce 1s infinite alternate; /* Hafif zıplama efekti */
         }
+        
+        /* Animasyonlar */
+        @keyframes pulse {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.03) rotate(1deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        @keyframes glow-pulse {
+            from { box-shadow: 0 0 30px rgba(29, 185, 84, 0.4); }
+            to { box-shadow: 0 0 45px rgba(29, 185, 84, 0.8); }
+        }
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(50px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .slide.active > * {
+            animation: slideInUp 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; /* Daha profesyonel bir easing */
+        }
+        
+        /* Ek: İlk slayt daha yavaş animasyonla giriş yapsın */
+        .slide:nth-child(1).active > * {
+            animation: slideInUp 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
     </style>
 </head>
 <body>
-    <div class="wrapped-container">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify Logo" class="spotify-logo">
-        
-        <h1>2025 Wrapped</h1>
-        
-        <div class="big-text">
-            Taşralaşevgili Seyit,<br>
-            2025'te baban<br>
-            <span class="highlight">çok elle yemek yedi</span>
+    <div class="slides-container">
+        <div class="slide active">
+            <img src="https://i.pinimg.com/originals/ce/ae/84/ceae847c49d3b84b2da84eb7d6d83cd0.jpg" alt="Spotify Logo" class="spotify-logo">
+            <h1>2025 WRAPPED</h1>
+            <p>Taşralaşevgili **Seyit**</p>
+            <div class="footer">
+                Yılın en güzel müziği... ve daha fazlası.
+            </div>
         </div>
-        
-        <p>Bu yılki en büyük trendin: Geleneksel lezzetler!</p>
-        <p>Hadi bizle Wrapped'ini paylaş!</p>
-        
-        <div class="footer">
-            Sunucuyu açacak bu yazsın<br>
-            Sadece Spotify'da (ve Discord'da 😏)
+
+        <div class="slide">
+            <img src="https://i.pinimg.com/originals/ce/ae/84/ceae847c49d3b84b2da84eb7d6d83cd0.jpg" alt="Spotify Logo" class="spotify-logo">
+            <div class="big-text">
+                2025'te baban<br>
+                <span class="highlight">478 Saat</span><br>
+                **Çok Elle Yemek Yedi**
+            </div>
+            <div class="hand-emoji">✋🍚🍲</div>
+        </div>
+
+        <div class="slide">
+            <img src="https://i.pinimg.com/originals/ce/ae/84/ceae847c49d3b84b2da84eb7d6d83cd0.jpg" alt="Spotify Logo" class="spotify-logo">
+            <p>Bu yılki en büyük trendin:</p>
+            <p class="big-text highlight" style="font-size: 100px;">GELENEKSEL LEZZETLER</p>
+            <p>... ve 3 yeni bölge keşfettin!</p>
+        </div>
+
+        <div class="slide">
+            <img src="https://i.pinimg.com/originals/ce/ae/84/ceae847c49d3b84b2da84eb7d6d83cd0.jpg" alt="Spotify Logo" class="spotify-logo">
+            <p class="big-text">
+                Hadi bizle<br>**Wrapped'ini paylaş!** 💚
+            </p>
+            <div class="footer">
+                Sunucuyu açacak bu yazsın<br>
+                Sadece Spotify'da (ve Discord'da 😏)
+            </div>
         </div>
     </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+        const intervalTime = 5000; // 5 saniye
+
+        function showNextSlide() {
+            // Önceki slayttaki tüm animasyonları sıfırla (tekrar tetiklenebilmesi için)
+            slides[currentSlide].classList.remove('active');
+            
+            // Sonraki slayta geç
+            currentSlide = (currentSlide + 1) % slides.length;
+            
+            // Yeni slaytı aktif et
+            slides[currentSlide].classList.add('active');
+        }
+
+        // Her 5 saniyede bir slayt değiştir
+        setInterval(showNextSlide, intervalTime);
+    </script>
 </body>
 </html>
