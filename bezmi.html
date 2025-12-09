@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bezmi Bot - Sohbet Asistanı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==================================== */
+        /* CSS STİLLERİ */
+        /* ==================================== */
+        
+        :root {
+            --color-main: #17A2B8; /* Ana Mavi/Yeşil Renk */
+            --color-background: #F8F9FA; /* Sohbet Alanı Arkaplanı */
+            --color-text: #212529; /* Koyu Gri Yazı */
+            --color-bubble-bot: #E9ECEF; /* Bot Balonu Arkaplanı */
+            --font-size-base: 0.95em;
+            /* Eklenen Renkler */
+            --color-sidebar-bg: #FFFFFF;
+            --color-sidebar-border: #E0E0E0;
+            --color-icon-active: var(--color-main);
+            --color-preview-bg: #EAEAEA;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #E0E0E0; /* Sayfa Arkaplanı */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .chat-container {
+            width: 100%;
+            max-width: 450px;
+            height: 90vh;
+            max-height: 800px;
+            background-color: #FFFFFF;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        /* BAŞLIK */
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #E0E0E0;
+            background-color: #FFFFFF;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            min-height: 40px;
+            z-index: 10;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .profile-photo-area {
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .profile-photo {
+            width: 70px;
+            height: 50px;
+            border-radius: 6px; 
+            object-fit: cover;
+            border: none;
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .bot-info h1 {
+            font-size: 1.1em;
+            margin: 0;
+            color: var(--color-text);
+        }
+        
+        .status {
+            font-size: 0.75em;
+            display: flex;
+            align-items: center;
+            color: #6c757d;
+        }
+        
+        .status.online::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: #28a745; /* Yeşil */
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+
+        .status.offline::before {
+            background-color: #ffc107; /* Sarı/Turuncu (Meşgul) */
+        }
+
+        .icon-button {
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-left: 10px;
+            color: var(--color-text);
+        }
+        
+        /* SOHBET ALANI */
+        .chat-main {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: scroll;
+            background-color: var(--color-background);
+        }
+        
+        .message {
+            display: flex;
+            margin-bottom: 10px;
+            font-size: var(--font-size-base);
+            flex-direction: column;
+            max-width: 80%;
+        }
+        
+        /* Bold yazı stili için stil */
+        .message .bubble strong, .message .bubble b {
+            font-weight: 700;
+        }
+
+        .system-message {
+            text-align: center;
+            font-size: 0.8em;
+            color: #6c757d;
+            margin: 15px auto;
+        }
+        
+        .user-message {
+            margin-left: auto;
+            align-items: flex-end;
+        }
+        
+        .user-message .bubble {
+            background-color: var(--color-main);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 18px 18px 2px 18px;
+            word-wrap: break-word;
+        }
+
+        /* Görsel içeren mesaj stili */
+        .user-message .bubble.with-image {
+            padding: 6px;
+            background-color: var(--color-main);
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .user-message .bubble .message-image {
+            max-width: 200px; /* Maksimum görsel genişliği */
+            height: auto;
+            border-radius: 12px;
+            display: block;
+        }
+        .user-message .bubble .image-caption {
+            font-size: 0.9em;
+            padding: 4px;
+            color: white;
+            word-wrap: break-word;
+        }
+        
+        .bot-message {
+            margin-right: auto;
+            align-items: flex-start;
+        }
+        
+        .bot-message .bubble {
+            background-color: var(--color-bubble-bot);
+            color: var(--color-text);
+            padding: 10px 15px;
+            border-radius: 18px 18px 18px 2px;
+            word-wrap: break-word;
+        }
+
+        /* Yükleniyor (Typing) Animasyonu */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            background-color: var(--color-bubble-bot);
+            padding: 10px 15px;
+            border-radius: 18px 18px 18px 2px;
+            width: fit-content;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            margin: 0 3px;
+            background-color: #6c757d;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+        
+        .message .time {
+            font-size: 0.7em;
+            color: #999;
+            margin-top: 2px;
+        }
+        
+        /* GİRİŞ ALANI */
+        .chat-footer {
+            display: flex;
+            flex-direction: column; /* İçeriği dikey sırala (önizleme üstte) */
+            padding: 10px 15px;
+            border-top: 1px solid #E0E0E0;
+            background-color: #FFFFFF;
+        }
+
+        /* Yeni: Görsel Önizleme Alanı */
+        #image-preview {
+            display: none; /* Başlangıçta gizli */
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            background-color: var(--color-preview-bg);
+            position: relative;
+        }
+
+        #image-preview img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-right: 10px;
+        }
+        
+        #image-preview .close-preview {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-controls {
+            display: flex;
+            align-items: center;
+        }
+        
+        .input-box-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            border: 1px solid #CED4DA;
+            border-radius: 25px;
+            padding-right: 10px;
+            margin-right: 10px;
+        }
+
+        /* Yeni: Görsel Yükleme Butonu */
+        .image-upload-button {
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            color: #6c757d;
+            padding: 5px 8px;
+            transition: color 0.2s;
+        }
+
+        .image-upload-button:hover {
+            color: var(--color-main);
+        }
+
+        .input-box {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: none; /* Kapsayıcıya taşındı */
+            border-radius: 0 25px 25px 0;
+            font-size: 1em;
+            outline: none;
+        }
+        
+        .send-button {
+            background-color: var(--color-main);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s, opacity 0.2s;
+        }
+        
+        .send-button:hover:not(:disabled) {
+            background-color: #138496;
+        }
+
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .send-icon {
+            font-size: 1.2em;
+            transform: rotate(45deg) translate(2px, -2px);
+        }
+
+        /* ============ EK ÖZEL STİLLER (Menü ve Ayarlar) ============ */
+        
+        /* Menü Barı (Hamburger menü) */
+        .menu-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 80%;
+            max-width: 300px;
+            background-color: var(--color-sidebar-bg);
+            border-right: 1px solid var(--color-sidebar-border);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 20;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .menu-bar.open {
+            transform: translateX(0);
+        }
+
+        .menu-header {
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-bottom: 1px solid var(--color-sidebar-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Sohbet Geçmişi Listesi */
+        .chat-history-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .history-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #F1F1F1;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .history-item:hover {
+            background-color: #F8F8F8;
+        }
+
+        .history-item.active {
+            background-color: #E6F7FF;
+            color: var(--color-main);
+            border-left: 4px solid var(--color-main);
+            padding-left: 11px;
+        }
+
+        .history-item img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .history-info {
+            flex-grow: 1;
+        }
+
+        .history-info strong {
+            display: block;
+            font-size: 0.95em;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .history-info small {
+            font-size: 0.75em;
+            color: #6c757d;
+        }
+
+        .history-time {
+            font-size: 0.7em;
+            color: #999;
+            text-align: right;
+        }
+
+        /* Menü Kapatma Düğmesi */
+        .menu-close-button {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: var(--color-text);
+        }
+
+        /* Saydamlık Katmanı (Sidebar açıldığında) */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 15;
+            display: none;
+        }
+        .menu-bar.open ~ .overlay {
+            display: block;
+        }
+        
+        /* Modal (Ayarlar) - Orijinal Koddan Korundu */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-backdrop.open {
+            display: flex;
+        }
+        .modal {
+            background: #fff;
+            width: 90%;
+            max-width: 520px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            padding: 16px;
+        }
+        .modal h2 {
+            margin: 0 0 8px 0;
+            font-size: 1.1rem;
+        }
+        .modal .modal-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+        }
+        .modal .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn.secondary {
+            background: #f1f1f1;
+        }
+        .btn.primary {
+            background: var(--color-main);
+            color: white;
+        }
+        .modal .control {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .modal label small { color: #6c757d; display:block; margin-top:4px; }
+        
+        /* Karanlık Tema Güncellemeleri */
+        .dark-theme {
+            --color-main: #128394;
+            --color-background: #0f1720;
+            --color-text: #e6eef3;
+            --color-bubble-bot: #15232b;
+            background-color: #071019;
+            color: var(--color-text);
+            /* Yeni Karanlık Tema Değişkenleri */
+            --color-sidebar-bg: #071019;
+            --color-sidebar-border: #0b2631;
+            --color-preview-bg: #15232b;
+        }
+        
+        .dark-theme .menu-bar,
+        .dark-theme .menu-header {
+            background-color: var(--color-sidebar-bg);
+            border-color: var(--color-sidebar-border);
+        }
+        .dark-theme .history-item {
+            border-bottom-color: #0b2631;
+        }
+        .dark-theme .history-item:hover {
+            background-color: #15232b;
+        }
+        .dark-theme .history-item.active {
+            background-color: #0b2631;
+            border-left-color: var(--color-main);
+        }
+        .dark-theme .history-info small,
+        .dark-theme .history-time {
+            color: #b0c4de;
+        }
+        .dark-theme .menu-close-button {
+            color: var(--color-text);
+        }
+        .dark-theme .image-upload-button {
+            color: #b0c4de;
+        }
+        .dark-theme .image-upload-button:hover {
+            color: var(--color-main);
+        }
+        .dark-theme .modal {
+            background: var(--color-sidebar-bg);
+            color: var(--color-text);
+        }
+        .dark-theme .modal .modal-row {
+             border-color: #15232b;
+        }
+        .dark-theme .modal .btn.secondary {
+            background: var(--color-bubble-bot);
+            color: var(--color-text);
+        }
+
+        /* Font size helper classes */
+        .font-small { --font-size-base: 0.85em; }
+        .font-normal { --font-size-base: 0.95em; }
+        .font-large { --font-size-base: 1.05em; }
+
+        /* Mobil uyumluluk için düzenlemeler */
+        @media (max-width: 600px) {
+            .chat-container {
+                height: 100vh;
+                border-radius: 0;
+                max-width: 100%;
+            }
+            /* ... (Diğer Mobil Stilleri Aynı Kaldı) ... */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        
+        <div id="menu-bar" class="menu-bar">
+            <div class="menu-header">
+                <span>Sohbet Geçmişi</span>
+                <button id="menu-close" class="menu-close-button" title="Menüyü Kapat">✕</button>
+            </div>
+            <ul class="chat-history-list">
+                <li class="history-item active">
+                    <img src="https://via.placeholder.com/32/17A2B8/FFFFFF?text=B" alt="Kullanıcı Foto">
+                    <div class="history-info">
+                        <strong>Bugün: Yeni Arayüz Taslağı</strong>
+                        <small>Yeni özelliklerin entegrasyonu...</small>
+                    </div>
+                    <div class="history-time">13:51</div>
+                </li>
+                <li class="history-item">
+                    <img src="https://via.placeholder.com/32/6c757d/FFFFFF?text=R" alt="Kullanıcı Foto">
+                    <div class="history-info">
+                        <strong>Dün: Proje Toplantısı Notları</strong>
+                        <small>Gecikmelerin nedenleri ve çözümler...</small>
+                    </div>
+                    <div class="history-time">Dün</div>
+                </li>
+                <li class="history-item">
+                    <img src="https://via.placeholder.com/32/6c757d/FFFFFF?text=R" alt="Kullanıcı Foto">
+                    <div class="history-info">
+                        <strong>Geçen Hafta: Görsel Analiz Raporu</strong>
+                        <small>Ürün görsellerinin performans analizi</small>
+                    </div>
+                    <div class="history-time">28.11</div>
+                </li>
+                </ul>
+        </div>
+        <div id="menu-overlay" class="overlay"></div>
+
+        <header class="chat-header">
+            <div class="header-left">
+                <button id="menu-button" class="icon-button" style="margin-right:15px;" title="Sohbet Geçmişi">☰</button>
+
+                <div class="profile-photo-area">
+                    <img src="Bezmiâlem_Vakıf_Üniversitesi_logosu (1).png" alt="Bezmi Bot Logosu" id="user-photo" class="profile-photo" width="591" height="288">
+                </div>
+                <div class="bot-info">
+                    <h1>Bezmi Bot</h1>
+                    <span class="status online" id="bot-status">Çevrimiçi</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button id="settings-button" class="icon-button" title="Ayarlar">⚙️</button>
+                <button id="theme-toggle-button" class="icon-button" title="Tema Değiştir">🌓</button>
+            </div>
+        </header>
+
+        <main class="chat-main" id="chat-window">
+            <div class="message system-message" id="system-welcome">
+                APİ BY emir
+            </div>
+
+            
+        </main>
+
+        <footer class="chat-footer">
+            <div id="image-preview">
+                <img id="preview-image" src="#" alt="Önizleme Görseli">
+                <span id="preview-filename">Dosya adı</span>
+                <button id="close-preview" class="close-preview" title="Görseli Kaldır">✕</button>
+            </div>
+            
+            <div class="input-controls">
+                <input type="file" id="image-file-input" accept="image/*" style="display: none;">
+
+                <div class="input-box-container">
+                    <button id="image-upload-trigger" class="image-upload-button" title="Görsel Yükle/Oluştur">🖼️</button>
+                    <input type="text" id="user-input" placeholder="Mesajınızı buraya yazın..." class="input-box" autocomplete="off">
+                </div>
+                <button id="send-button" class="send-button">
+                    <span class="send-icon">➤</span>
+                </button>
+            </div>
+        </footer>
+
+    </div>
+
+    <div id="settings-modal-backdrop" class="modal-backdrop" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+            <h2 id="settings-title">Ayarlar</h2>
+
+            <div class="modal-row" style="border-top:none;">
+                <div>
+                    <strong>Tema</strong>
+                    <div style="font-size:0.85rem; color:#6c757d;">Karanlık mod aç/kapa</div>
+                </div>
+                <div>
+                    <label style="display:inline-flex; align-items:center; gap:8px;">
+                        <input type="checkbox" id="settings-dark-toggle">
+                        <span style="font-size:0.9rem;">Karanlık</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-row">
+                <div>
+                    <strong>Yazı Boyutu</strong>
+                    <small>Sohbet balonları ve giriş kutusu için yazı boyutunu seçin</small>
+                </div>
+                <div class="control">
+                    <label><input type="radio" name="font-size" value="small" id="font-small"> Küçük</label>
+                    <label><input type="radio" name="font-size" value="normal" id="font-normal"> Normal</label>
+                    <label><input type="radio" name="font-size" value="large" id="font-large"> Büyük</label>
+                </div>
+            </div>
+
+            <div class="modal-row">
+                <div>
+                    <strong>Logo Boyutu</strong>
+                    <small>Logonun genişliğini ayarlayın (px, responsive)</small>
+                </div>
+                <div class="control" style="display:flex;flex-direction:column;align-items:flex-end;">
+                    <input type="range" id="logo-size-range" min="64" max="591" step="1" value="591" style="width:160px;">
+                    <div style="font-size:0.85rem; color:#6c757d;" id="logo-size-value">Genişlik: 591px</div>
+                </div>
+            </div>
+
+            <div class="modal-row">
+                <div>
+                    <strong>Sohbet Geçmişi</strong>
+                    <small>Sohbet geçmişini temizleyin (geri alınamaz)</small>
+                </div>
+                <div class="control">
+                    <button id="clear-history-button" class="btn secondary">Temizle</button>
+                </div>
+            </div>
+
+            <div class="modal-row">
+                <div>
+                    <strong>Ek</strong>
+                    <small>Tercihleri sıfırla veya kaydet</small>
+                </div>
+                <div class="control">
+                    <button id="reset-settings-button" class="btn secondary">Sıfırla</button>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button id="settings-close" class="btn secondary">Kapat</button>
+                <button id="settings-save" class="btn primary">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // **********************************************
+        // LÜTFEN API AYARLARINI KENDİ BİLGİLERİNİZLE DEĞİŞTİRİN
+        const OPENROUTER_API_KEY = "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"; // OpenRouter API Anahtarınız
+        const OPENROUTER_MODEL = "amazon/nova-2-lite-v1:free";      // Kullanmak istediğiniz model
+        // **********************************************
+        
+        // Arayüz Elementleri
+        const chatWindow = document.getElementById('chat-window');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const botStatus = document.getElementById('bot-status');
+        const userPhoto = document.getElementById('user-photo');
+
+        // Yeni eklenen ayarlar elementleri (Korundu)
+        const settingsButton = document.getElementById('settings-button');
+        const themeToggleButton = document.getElementById('theme-toggle-button');
+        const settingsBackdrop = document.getElementById('settings-modal-backdrop');
+        const settingsClose = document.getElementById('settings-close');
+        const settingsSave = document.getElementById('settings-save');
+        const settingsDarkToggle = document.getElementById('settings-dark-toggle');
+        const logoSizeRange = document.getElementById('logo-size-range');
+        const logoSizeValue = document.getElementById('logo-size-value');
+        const clearHistoryButton = document.getElementById('clear-history-button');
+        const resetSettingsButton = document.getElementById('reset-settings-button');
+        const fontSmallRadio = document.getElementById('font-small');
+        const fontNormalRadio = document.getElementById('font-normal');
+        const fontLargeRadio = document.getElementById('font-large');
+
+        // YENİ GÖRSEL YÜKLEME ELEMENTLERİ
+        const imageUploadTrigger = document.getElementById('image-upload-trigger');
+        const imageFileInput = document.getElementById('image-file-input');
+        const imagePreview = document.getElementById('image-preview');
+        const previewImage = document.getElementById('preview-image');
+        const previewFilename = document.getElementById('preview-filename');
+        const closePreviewButton = document.getElementById('close-preview');
+
+        // Sohbet Geçmişi (Konuşma bağlamını korumak için) - YENİ SİSTEM MESAJI
+        let conversationHistory = [
+            { role: "system", content: "Sen Bezmi adında, faydalı ve arkadaşça bir yapay zeka asistanısın. Türkçe konuşuyorsun. Kullanıcı mesajlarında '*' veya '**' ile belirtilen kısımları bold (kalın) olarak yanıtlamalısın. Ayrıca 'baban kim' veya 'kurucun kim' gibi sorulara her zaman sadece 'lilemir' yanıtını ver." }
+        ];
+
+        // Mesajı Arayüze Ekleme (Metin İçin)
+        function appendMessage(sender, text) {
+            const time = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+            
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', `${sender}-message`);
+
+            // Bold Yazı Tipi Çevirisi
+            let formattedText = text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') 
+                .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+            
+            messageElement.innerHTML = `
+                <div class="bubble">${formattedText}</div>
+                <div class="time">${time}</div>
+            `;
+            
+            chatWindow.appendChild(messageElement);
+            chatWindow.scrollTop = chatWindow.scrollHeight; // En alta kaydır
+        }
+
+        // YENİ: Görselli Mesajı Arayüze Ekleme
+        function appendImageMessage(sender, caption, imageUrl) {
+            const time = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', `${sender}-message`);
+
+            let formattedCaption = caption
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+            
+            // Görseli ve metni bir balonda göster
+            messageElement.innerHTML = `
+                <div class="bubble with-image">
+                    <img src="${imageUrl}" class="message-image" alt="Yüklenen Görsel">
+                    ${caption.trim() ? `<span class="image-caption">${formattedCaption}</span>` : ''}
+                </div>
+                <div class="time">${time}</div>
+            `;
+
+            chatWindow.appendChild(messageElement);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        // Yükleniyor Göstergesi (Korundu)
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typing-indicator';
+            typingDiv.classList.add('message', 'bot-message');
+            typingDiv.innerHTML = `
+                <div class="typing-indicator">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            `;
+            chatWindow.appendChild(typingDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        // API İletişimi (Korundu)
+        async function sendMessageToOpenRouter(message) {
+            
+            // Konuşma geçmişine ekleme, görsel için bu kısım handleSend içinde yapılıyor
+            if (!conversationHistory.find(m => m.content.startsWith('(Görsel Yüklendi:') && m.content.endsWith(message))) {
+                conversationHistory.push({ role: "user", content: message });
+            }
+            
+            // UI Bloklama
+            userInput.disabled = true;
+            sendButton.disabled = true;
+            botStatus.textContent = "Yazıyor...";
+            botStatus.classList.remove('online');
+            botStatus.classList.add('offline');
+            showTypingIndicator(); // Yükleniyor animasyonunu göster
+
+            try {
+                // Not: API Key'i burada değiştirmelisiniz
+                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: OPENROUTER_MODEL,
+                        messages: conversationHistory
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Hatası: ${response.status} - ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                const botResponse = data.choices[0].message.content;
+
+                conversationHistory.push({ role: "assistant", content: botResponse });
+                
+                removeTypingIndicator(); // Yükleniyor animasyonunu kaldır
+                appendMessage('bot', botResponse);
+
+            } catch (error) {
+                console.error("OpenRouter API Hata:", error);
+                removeTypingIndicator();
+                appendMessage('bot', `⚠️ API bağlantı hatası oluştu. Lütfen konsolu kontrol edin.`);
+            } finally {
+                // UI Normalleştirme
+                userInput.disabled = false;
+                sendButton.disabled = false;
+                botStatus.textContent = "Çevrimiçi";
+                botStatus.classList.remove('offline');
+                botStatus.classList.add('online');
+                userInput.focus();
+            }
+        }
+
+        // Görsel Önizlemeyi Temizleme
+        function clearImagePreview() {
+            imagePreview.style.display = 'none';
+            previewImage.src = '#';
+            previewFilename.textContent = '';
+            imageFileInput.value = ''; // Input'u temizle
+            userInput.focus();
+        }
+
+        // Gönderme İşlemi (Görsel ve Özel Yanıt Kontrolü Eklendi)
+        function handleSend() {
+            const message = userInput.value.trim();
+            const file = imageFileInput.files[0];
+
+            if (message === "" && !file) {
+                return; // Boş mesaj ve görsel yoksa hiçbir şey yapma
+            }
+            
+            // 1. Kullanıcı Mesajını Ekle
+            let sentMessageContent = message;
+
+            if (file) {
+                // Görsel yüklendiğinde, mesaj balonunda göster
+                appendImageMessage('user', message, URL.createObjectURL(file));
+                // Görselin API'ye gönderilmediği, sadece sohbet bağlamına dahil olduğu simüle edilir
+                sentMessageContent = `(Görsel Yüklendi: ${file.name}) ${message}`;
+                conversationHistory.push({ role: "user", content: sentMessageContent });
+            } else {
+                appendMessage('user', message);
+            }
+            
+            const normalizedMessage = message.toLowerCase().replace(/[.,?!\s]/g, '');
+
+            // Mesajı gönderdikten sonra input'ları temizle
+            userInput.value = '';
+            clearImagePreview();
+            
+            // 2. Özel Yanıt Kontrolü (Baban/Kurucun kim?)
+            if (normalizedMessage.includes('babankim') || normalizedMessage.includes('kurucunkim')) {
+                // Hardcoded yanıtı döndür ve API çağrısını atla
+                setTimeout(() => {
+                    const lilemirResponse = "Kurucum ve babam **lilemir**'dir.";
+                    appendMessage('bot', lilemirResponse);
+                    // Konuşma geçmişine normal metin olarak ekle
+                    conversationHistory.push({ role: "assistant", content: "Kurucum ve babam lilemir'dir." });
+                }, 500); // Küçük bir gecikme botun düşündüğü izlenimini verir
+                return;
+            }
+            
+            // 3. Normal API Çağrısı
+            sendMessageToOpenRouter(message);
+        }
+
+
+        // Olay Dinleyicileri
+
+        // Görsel yükleme butonu, gizli input'u tetikler
+        imageUploadTrigger.addEventListener('click', () => {
+            imageFileInput.click();
+        });
+
+        // Gizli input'un dosya seçimi değiştiğinde önizlemeyi göster
+        imageFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                previewImage.src = url;
+                previewFilename.textContent = file.name;
+                imagePreview.style.display = 'flex';
+                userInput.focus();
+            } else {
+                clearImagePreview();
+            }
+        });
+
+        // Önizlemeyi kapatma butonu
+        closePreviewButton.addEventListener('click', clearImagePreview);
+
+
+        // Normal mesaj gönderme olayları (Korundu)
+        sendButton.addEventListener('click', handleSend);
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault(); 
+                handleSend();
+            }
+        });
+
+        // -------------------- DİĞER FONKSİYONLAR (Korundu) --------------------
+
+        function applyTheme(dark) {
+            if (dark) {
+                document.documentElement.classList.add('dark-theme');
+            } else {
+                document.documentElement.classList.remove('dark-theme');
+            }
+            try {
+                localStorage.setItem('bezmi_theme_dark', dark ? '1' : '0');
+            } catch(e) {}
+        }
+        function applyFontSize(size) {
+            document.documentElement.classList.remove('font-small', 'font-normal', 'font-large');
+            if (size === 'small') document.documentElement.classList.add('font-small');
+            else if (size === 'large') document.documentElement.classList.add('font-large');
+            else document.documentElement.classList.add('font-normal');
+            try {
+                localStorage.setItem('bezmi_font_size', size);
+            } catch(e) {}
+        }
+        function applyLogoSize(px) {
+            if (!px || isNaN(px)) return;
+            userPhoto.style.width = px + 'px';
+            userPhoto.style.height = 'auto';
+            logoSizeRange.value = px;
+            logoSizeValue.textContent = `Genişlik: ${px}px`;
+            try {
+                localStorage.setItem('bezmi_logo_size', String(px));
+            } catch(e) {}
+        }
+        themeToggleButton.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.contains('dark-theme');
+            applyTheme(!isDark);
+            settingsDarkToggle.checked = !isDark;
+        });
+        function openSettingsModal() {
+            settingsBackdrop.classList.add('open');
+            settingsBackdrop.setAttribute('aria-hidden', 'false');
+            settingsDarkToggle.checked = document.documentElement.classList.contains('dark-theme');
+
+            const f = localStorage.getItem('bezmi_font_size') || 'normal';
+            fontSmallRadio.checked = f === 'small';
+            fontNormalRadio.checked = f === 'normal';
+            fontLargeRadio.checked = f === 'large';
+
+            const storedLogo = parseInt(localStorage.getItem('bezmi_logo_size')) || userPhoto.naturalWidth || 591;
+            logoSizeRange.value = storedLogo;
+            logoSizeValue.textContent = `Genişlik: ${storedLogo}px`;
+        }
+        function closeSettingsModal() {
+            settingsBackdrop.classList.remove('open');
+            settingsBackdrop.setAttribute('aria-hidden', 'true');
+        }
+
+        settingsButton.addEventListener('click', openSettingsModal);
+        settingsClose.addEventListener('click', closeSettingsModal);
+        settingsBackdrop.addEventListener('click', (e) => {
+            if (e.target === settingsBackdrop) closeSettingsModal();
+        });
+
+        settingsSave.addEventListener('click', () => {
+            const dark = !!settingsDarkToggle.checked;
+            applyTheme(dark);
+
+            const font = fontSmallRadio.checked ? 'small' : (fontLargeRadio.checked ? 'large' : 'normal');
+            applyFontSize(font);
+
+            const logoPx = parseInt(logoSizeRange.value) || 591;
+            applyLogoSize(logoPx);
+
+            closeSettingsModal();
+        });
+
+        logoSizeRange.addEventListener('input', (e) => {
+            const px = parseInt(e.target.value);
+            logoSizeValue.textContent = `Genişlik: ${px}px`;
+            userPhoto.style.width = px + 'px';
+            userPhoto.style.height = 'auto';
+        });
+
+        clearHistoryButton.addEventListener('click', () => {
+            const ok = confirm('Sohbet geçmişini gerçekten temizlemek istiyor musunuz? Bu işlem geri alınamaz.');
+            if (!ok) return;
+            conversationHistory = [
+                { role: "system", content: "Sen Bezmi adında, faydalı ve arkadaşça bir yapay zeka asistanısın. Türkçe konuşuyorsun. Kullanıcı mesajlarında '*' veya '**' ile belirtilen kısımları bold (kalın) olarak yanıtlamalısın. Ayrıca 'baban kim' veya 'kurucun kim' gibi sorulara her zaman sadece 'lilemir' yanıtını ver." }
+            ];
+            chatWindow.innerHTML = `
+                <div class="message system-message" id="system-welcome">
+                    OpenRouter API'si üzerinden Bezmi Bot'a hoş geldiniz.
+                </div>
+                <div class="message bot-message">
+                    <div class="bubble">Artık <strong>kalın bold yazı</strong> stilini ve <strong>lilemir</strong>'e özel yanıtı destekliyorum!</div>
+                    <div class="time">${new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}</div>
+                </div>
+            `;
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+
+            try {
+                localStorage.removeItem('bezmi_conversation_history');
+            } catch(e) {}
+            alert('Sohbet geçmişi temizlendi.');
+        });
+
+
+        resetSettingsButton.addEventListener('click', () => {
+            const ok = confirm('Tüm ayarları varsayılan değerlere sıfırlamak istiyor musunuz?');
+            if (!ok) return;
+            applyTheme(false);
+            applyFontSize('normal');
+            applyLogoSize(591);
+            settingsDarkToggle.checked = false;
+            fontNormalRadio.checked = true;
+            logoSizeRange.value = 591;
+            logoSizeValue.textContent = 'Genişlik: 591px';
+            try {
+                localStorage.removeItem('bezmi_theme_dark');
+                localStorage.removeItem('bezmi_font_size');
+                localStorage.removeItem('bezmi_logo_size');
+            } catch(e) {}
+            alert('Ayarlar varsayılanlara sıfırlandı.');
+        });
+
+        // Sayfa yüklendiğinde ayarları uygula (Korundu)
+        document.addEventListener('DOMContentLoaded', () => {
+            userInput.focus();
+            try {
+                const storedTheme = localStorage.getItem('bezmi_theme_dark');
+                if (storedTheme === '1') {
+                    applyTheme(true);
+                    settingsDarkToggle.checked = true;
+                } else {
+                    applyTheme(false);
+                    settingsDarkToggle.checked = false;
+                }
+            } catch (e) {}
+            try {
+                const storedFont = localStorage.getItem('bezmi_font_size') || 'normal';
+                applyFontSize(storedFont);
+                if (storedFont === 'small') fontSmallRadio.checked = true;
+                else if (storedFont === 'large') fontLargeRadio.checked = true;
+                else fontNormalRadio.checked = true;
+            } catch(e) {}
+
+            try {
+                const storedLogo = parseInt(localStorage.getItem('bezmi_logo_size'));
+                const initial = !isNaN(storedLogo) ? storedLogo : (userPhoto.naturalWidth || 591);
+                applyLogoSize(initial);
+            } catch(e) {
+                applyLogoSize(591);
+            }
+        });
+        
+        // Menü Barı (Sohbet Geçmişi) İşlevselliği (Korundu)
+        const menuButton = document.getElementById('menu-button');
+        const menuBar = document.getElementById('menu-bar');
+        const menuClose = document.getElementById('menu-close');
+        const menuOverlay = document.getElementById('menu-overlay');
+
+        menuButton.addEventListener('click', () => {
+            menuBar.classList.add('open');
+        });
+
+        function closeMenuBar() {
+            menuBar.classList.remove('open');
+        }
+
+        menuClose.addEventListener('click', closeMenuBar);
+        menuOverlay.addEventListener('click', closeMenuBar);
+
+    </script>
+
+</body>
+</html>
