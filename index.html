@@ -1,110 +1,326 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seyit'in 2025 Wrapped (Yenilendi)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --spotify-green: #1DB954;
-            --dark-purple: #1a0033;
-            --deep-black: #000000;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>seyit2025 wrapped</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Spotify+Circular:wght@700;900&display=swap');
 
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            /* Daha dinamik, gece gökyüzü temalı bir degrade */
-            background: radial-gradient(circle at top left, #360057 0%, transparent 60%),
-                        radial-gradient(circle at bottom right, #001f3f 0%, transparent 60%),
-                        linear-gradient(135deg, var(--deep-black), var(--dark-purple), #0a0014);
-            color: #fff;
-            font-family: 'Montserrat', sans-serif; /* Ana metin için */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-        .slides-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-        .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            opacity: 0;
-            /* Geçiş animasyonunu daha belirgin hale getir */
-            transition: opacity 1.2s ease-in-out; 
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .slide.active {
-            opacity: 1;
-        }
-        .spotify-logo {
-            width: 160px;
-            margin-bottom: 30px;
-            /* Hafif bir dönme/parlama animasyonu */
-            animation: pulse 2s infinite, glow-pulse 2s infinite alternate;
-            border-radius: 50%; /* Logoyu yuvarlak bir vurgu içine al */
-            box-shadow: 0 0 30px rgba(29, 185, 84, 0.5); /* Hafif yeşil parıltı */
-        }
-        h1 {
-            font-family: 'Oswald', sans-serif; /* Başlık için dikkat çekici font */
-            font-size: 80px;
-            font-weight: 700;
-            margin: 20px 0 40px;
-            text-transform: uppercase;
-            /* Neon efekti */
-            text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px var(--spotify-green);
-            letter-spacing: 5px;
-        }
-        .big-text {
-            font-size: 70px;
-            font-weight: 900;
-            line-height: 1.1;
-            margin: 30px 0;
-            max-width: 90%;
-        }
-        .highlight {
-            color: var(--spotify-green);
-            font-size: 90px;
-            /* Daha güçlü bir neon efekti */
-            text-shadow: 0 0 8px #fff, 0 0 15px var(--spotify-green), 0 0 25px var(--spotify-green);
-        }
-        p {
-            font-size: 32px;
-            margin: 20px 0;
-            max-width: 90%;
-            font-weight: 400;
-            opacity: 0.9;
-        }
-        .footer {
-            margin-top: 60px;
-            font-size: 24px;
-            opacity: 0.7;
-            font-style: italic;
-        }
-        .hand-emoji {
-            font-size: 100px;
-            margin: 20px 0;
-            animation: bounce 1s infinite alternate; /* Hafif zıplama efekti */
-        }
-        
-        /* Animasyonlar */
-        @keyframes pulse {
-            0% { transform: scale(1) rotate(0deg); }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      height: 100vh;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: 'Spotify Circular', sans-serif;
+    }
+
+    .wrapped {
+      width: 100%;
+      max-width: 420px;
+      aspect-ratio: 9/16;
+      background: radial-gradient(circle at top, #1DB954 10%, #000 80%);
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 0 80px rgba(29, 185, 84, 0.6);
+    }
+
+    .logo {
+      width: 140px;
+      position: absolute;
+      top: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: pulse 3s infinite;
+      filter: drop-shadow(0 0 20px #1DB954);
+    }
+
+    .hand {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      width: 180px;
+      transform: translateX(-50%);
+      opacity: 0;
+      animation: handMove 4s infinite 2s;
+    }
+
+    .text {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 40px 20px;
+      text-align: center;
+      color: white;
+    }
+
+    h1 {
+      font-size: 52px;
+      font-weight: 900;
+      background: linear-gradient(90deg, #1DB954, #00ff85);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+      animation: glow 2.5s infinite alternate;
+    }
+
+    .line {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 14px 0;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .counter {
+      font-size: 48px !important;
+      color: #1DB954;
+      font-weight: 900;
+      text-shadow: 0 0 30px #1DB954;
+    }
+
+    .particles {
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><circle cx="30" cy="30" r="4" fill="%231DB954" opacity="0.3"/></svg>') repeat;
+      animation: drift 30s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes pulse { 0%,100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.15); } }
+    @keyframes glow { from { filter: drop-shadow(0 0 15px #1DB954); } to { filter: drop-shadow(0 0 40px #1DB954); } }
+    @keyframes drift { from { transform: translate(-50%, -50%); } to { transform: translate(0%, 0%); } }
+    @keyframes handMove { 0%,100% { opacity: 0; transform: translateX(-50%) translateY(0); } 20%,80% { opacity: 1; transform: translateX(-50%) translateY(-20px); } }
+  </style>
+</head>
+<body>
+
+<div class="wrapped">
+  <div class="particles"></div>
+
+  <!-- Spotify Logo -->
+  <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text.svg" class="logo">
+
+  <!-- El hareketi GIF (troll el işareti) -->
+  <img src="https://i.imgur.com/2e8eOa5.gif" class="hand" alt="el">
+
+  <div class="text">
+    <h1>seyit2025</h1>
+    
+    <div class="line" style="animation: fade 1s 1s forwards">te çok oçluk yaptın</div>
+    <div class="line" style="animation: fade 1s 1.8s forwards">baban tam <span class="counter" id="counter">0</span> kere</div>
+    <div class="line" style="animation: fade 1s 2.6s forwards">elle yemek yemiş vay be</div>
+    <div class="line" style="animation: fade 1s 3.4s forwards; color:#1DB954; font-size:38px;">
+      sunucunun açılması için<br>wrapped göster
+    </div>
+  </div>
+</div>
+
+<audio id="sound" preload="auto">
+  <source src="https://cdn.discordapp.com/attachments/123456789/123456789/vay-be-ses.mp3" type="audio/mp3">
+  <!-- Alternatif ses (gerçek "vay be" sesi yoksa bu çalışır) -->
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3" type="audio/ogg">
+</audio>
+
+<style>
+  @keyframes fade {
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<script>
+  // 2000'e kadar sayaç animasyonu
+  setTimeout(() => {
+    let count = 0;
+    const counter = document.getElementById('counter');
+    const interval = setInterval(() => {
+      count += 37;
+      if (count >= 2000) {
+        counter.textContent = '2000';
+        clearInterval(interval);
+        // Vay be sesi çalsın
+        document.getElementById('sound').play();
+      } else {
+        counter.textContent = count;
+      }
+    }, 40);
+  }, 2000);
+
+  // Tıklandığında ses çalsın (mobil uyumlu olsun diye)
+  document.body.addEventListener('click', () => {
+    document.getElementById('sound').play();
+  });
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>seyit2025 wrapped</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Spotify+Circular:wght@700;900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      height: 100vh;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: 'Spotify Circular', sans-serif;
+    }
+
+    .wrapped {
+      width: 100%;
+      max-width: 420px;
+      aspect-ratio: 9/16;
+      background: radial-gradient(circle at top, #1DB954 10%, #000 80%);
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 0 80px rgba(29, 185, 84, 0.6);
+    }
+
+    .logo {
+      width: 140px;
+      position: absolute;
+      top: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: pulse 3s infinite;
+      filter: drop-shadow(0 0 20px #1DB954);
+    }
+
+    .hand {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      width: 180px;
+      transform: translateX(-50%);
+      opacity: 0;
+      animation: handMove 4s infinite 2s;
+    }
+
+    .text {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 40px 20px;
+      text-align: center;
+      color: white;
+    }
+
+    h1 {
+      font-size: 52px;
+      font-weight: 900;
+      background: linear-gradient(90deg, #1DB954, #00ff85);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+      animation: glow 2.5s infinite alternate;
+    }
+
+    .line {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 14px 0;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .counter {
+      font-size: 48px !important;
+      color: #1DB954;
+      font-weight: 900;
+      text-shadow: 0 0 30px #1DB954;
+    }
+
+    .particles {
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><circle cx="30" cy="30" r="4" fill="%231DB954" opacity="0.3"/></svg>') repeat;
+      animation: drift 30s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes pulse { 0%,100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.15); } }
+    @keyframes glow { from { filter: drop-shadow(0 0 15px #1DB954); } to { filter: drop-shadow(0 0 40px #1DB954); } }
+    @keyframes drift { from { transform: translate(-50%, -50%); } to { transform: translate(0%, 0%); } }
+    @keyframes handMove { 0%,100% { opacity: 0; transform: translateX(-50%) translateY(0); } 20%,80% { opacity: 1; transform: translateX(-50%) translateY(-20px); } }
+  </style>
+</head>
+<body>
+
+<div class="wrapped">
+  <div class="particles"></div>
+
+  <!-- Spotify Logo -->
+  <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text.svg" class="logo">
+
+  <!-- El hareketi GIF (troll el işareti) -->
+  <img src="https://i.imgur.com/2e8eOa5.gif" class="hand" alt="el">
+
+  <div class="text">
+    <h1>seyit2025</h1>
+    
+    <div class="line" style="animation: fade 1s 1s forwards">te çok oçluk yaptın</div>
+    <div class="line" style="animation: fade 1s 1.8s forwards">baban tam <span class="counter" id="counter">0</span> kere</div>
+    <div class="line" style="animation: fade 1s 2.6s forwards">elle yemek yemiş vay be</div>
+    <div class="line" style="animation: fade 1s 3.4s forwards; color:#1DB954; font-size:38px;">
+      sunucunun açılması için<br>wrapped göster
+    </div>
+  </div>
+</div>
+
+<audio id="sound" preload="auto">
+  <source src="https://cdn.discordapp.com/attachments/123456789/123456789/vay-be-ses.mp3" type="audio/mp3">
+  <!-- Alternatif ses (gerçek "vay be" sesi yoksa bu çalışır) -->
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3" type="audio/ogg">
+</audio>
+
+<style>
+  @keyframes fade {
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<script>
+  // 2000'e kadar sayaç animasyonu
+  setTimeout(() => {
+    let count = 0;
+    const counter = document.getElementById('counter');
+    const interval = setInterval(() => {
+      count += 37;
+      if (count >= 2000) {
+        counter.textContent = '2000';
+        clearInterval(interval);
+        // Vay be sesi çalsın
+        document.getElementById('sound').play();
+      } else {
+        counter.textContent = count;
+      }
+    }, 40);
+  }, 2000);
+
+  // Tıklandığında ses çalsın (mobil uyumlu olsun diye)
+  document.body.addEventListener('click', () => {
+    document.getElementById('sound').play();
+  });
+</script>
+
+</body>
+</html>            0% { transform: scale(1) rotate(0deg); }
             50% { transform: scale(1.03) rotate(1deg); }
             100% { transform: scale(1) rotate(0deg); }
         }
@@ -192,3 +408,4 @@
     </script>
 </body>
 </html>
+
