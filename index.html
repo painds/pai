@@ -1,821 +1,247 @@
 <!DOCTYPE html>
-
 <html lang="tr">
-
 <head>
-
-  <meta charset="UTF-8">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>seyit2025 wrapped</title>
-
-  <style>
-
-    @import url('https://fonts.googleapis.com/css2?family=Spotify+Circular:wght@700;900&display=swap');
-
-
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-
-
-    body {
-
-      height: 100vh;
-
-      background: #000;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      overflow: hidden;
-
-      font-family: 'Spotify Circular', sans-serif;
-
-    }
-
-
-
-    .wrapped {
-
-      width: 100%;
-
-      max-width: 420px;
-
-      aspect-ratio: 9/16;
-
-      background: radial-gradient(circle at top, #1DB954 10%, #000 80%);
-
-      border-radius: 24px;
-
-      overflow: hidden;
-
-      position: relative;
-
-      box-shadow: 0 0 80px rgba(29, 185, 84, 0.6);
-
-    }
-
-
-
-    .logo {
-
-      width: 140px;
-
-      position: absolute;
-
-      top: 12%;
-
-      left: 50%;
-
-      transform: translateX(-50%);
-
-      animation: pulse 3s infinite;
-
-      filter: drop-shadow(0 0 20px #1DB954);
-
-    }
-
-
-
-    .hand {
-
-      position: absolute;
-
-      top: 40%;
-
-      left: 50%;
-
-      width: 180px;
-
-      transform: translateX(-50%);
-
-      opacity: 0;
-
-      animation: handMove 4s infinite 2s;
-
-    }
-
-
-
-    .text {
-
-      position: absolute;
-
-      bottom: 0;
-
-      width: 100%;
-
-      padding: 40px 20px;
-
-      text-align: center;
-
-      color: white;
-
-    }
-
-
-
-    h1 {
-
-      font-size: 52px;
-
-      font-weight: 900;
-
-      background: linear-gradient(90deg, #1DB954, #00ff85);
-
-      -webkit-background-clip: text;
-
-      -webkit-text-fill-color: transparent;
-
-      margin-bottom: 20px;
-
-      animation: glow 2.5s infinite alternate;
-
-    }
-
-
-
-    .line {
-
-      font-size: 32px;
-
-      font-weight: 700;
-
-      margin: 14px 0;
-
-      opacity: 0;
-
-      transform: translateY(40px);
-
-    }
-
-
-
-    .counter {
-
-      font-size: 48px !important;
-
-      color: #1DB954;
-
-      font-weight: 900;
-
-      text-shadow: 0 0 30px #1DB954;
-
-    }
-
-
-
-    .particles {
-
-      position: absolute;
-
-      width: 200%;
-
-      height: 200%;
-
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><circle cx="30" cy="30" r="4" fill="%231DB954" opacity="0.3"/></svg>') repeat;
-
-      animation: drift 30s linear infinite;
-
-      pointer-events: none;
-
-    }
-
-
-
-    @keyframes pulse { 0%,100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.15); } }
-
-    @keyframes glow { from { filter: drop-shadow(0 0 15px #1DB954); } to { filter: drop-shadow(0 0 40px #1DB954); } }
-
-    @keyframes drift { from { transform: translate(-50%, -50%); } to { transform: translate(0%, 0%); } }
-
-    @keyframes handMove { 0%,100% { opacity: 0; transform: translateX(-50%) translateY(0); } 20%,80% { opacity: 1; transform: translateX(-50%) translateY(-20px); } }
-
-  </style>
-
-</head>
-
-<body>
-
-
-
-<div class="wrapped">
-
-  <div class="particles"></div>
-
-
-
-  <!-- Spotify Logo -->
-
-  <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text.svg" class="logo">
-
-
-
-  <!-- El hareketi GIF (troll el işareti) -->
-
-  <img src="https://i.imgur.com/2e8eOa5.gif" class="hand" alt="el">
-
-
-
-  <div class="text">
-
-    <h1>seyit2025</h1>
-
-    
-
-    <div class="line" style="animation: fade 1s 1s forwards">te çok oçluk yaptın</div>
-
-    <div class="line" style="animation: fade 1s 1.8s forwards">baban tam <span class="counter" id="counter">0</span> kere</div>
-
-    <div class="line" style="animation: fade 1s 2.6s forwards">elle yemek yemiş vay be</div>
-
-    <div class="line" style="animation: fade 1s 3.4s forwards; color:#1DB954; font-size:38px;">
-
-      sunucunun açılması için<br>wrapped göster
-
-    </div>
-
-  </div>
-
-</div>
-
-
-
-<audio id="sound" preload="auto">
-
-  <source src="https://cdn.discordapp.com/attachments/123456789/123456789/vay-be-ses.mp3" type="audio/mp3">
-
-  <!-- Alternatif ses (gerçek "vay be" sesi yoksa bu çalışır) -->
-
-  <source src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3" type="audio/ogg">
-
-</audio>
-
-
-
-<style>
-
-  @keyframes fade {
-
-    to { opacity: 1; transform: translateY(0); }
-
-  }
-
-</style>
-
-
-
-<script>
-
-  // 2000'e kadar sayaç animasyonu
-
-  setTimeout(() => {
-
-    let count = 0;
-
-    const counter = document.getElementById('counter');
-
-    const interval = setInterval(() => {
-
-      count += 37;
-
-      if (count >= 2000) {
-
-        counter.textContent = '2000';
-
-        clearInterval(interval);
-
-        // Vay be sesi çalsın
-
-        document.getElementById('sound').play();
-
-      } else {
-
-        counter.textContent = count;
-
-      }
-
-    }, 40);
-
-  }, 2000);
-
-
-
-  // Tıklandığında ses çalsın (mobil uyumlu olsun diye)
-
-  document.body.addEventListener('click', () => {
-
-    document.getElementById('sound').play();
-
-  });
-
-</script>
-
-
-
-</body>
-
-</html><!DOCTYPE html>
-
-<html lang="tr">
-
-<head>
-
-  <meta charset="UTF-8">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>seyit2025 wrapped</title>
-
-  <style>
-
-    @import url('https://fonts.googleapis.com/css2?family=Spotify+Circular:wght@700;900&display=swap');
-
-
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-
-
-    body {
-
-      height: 100vh;
-
-      background: #000;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      overflow: hidden;
-
-      font-family: 'Spotify Circular', sans-serif;
-
-    }
-
-
-
-    .wrapped {
-
-      width: 100%;
-
-      max-width: 420px;
-
-      aspect-ratio: 9/16;
-
-      background: radial-gradient(circle at top, #1DB954 10%, #000 80%);
-
-      border-radius: 24px;
-
-      overflow: hidden;
-
-      position: relative;
-
-      box-shadow: 0 0 80px rgba(29, 185, 84, 0.6);
-
-    }
-
-
-
-    .logo {
-
-      width: 140px;
-
-      position: absolute;
-
-      top: 12%;
-
-      left: 50%;
-
-      transform: translateX(-50%);
-
-      animation: pulse 3s infinite;
-
-      filter: drop-shadow(0 0 20px #1DB954);
-
-    }
-
-
-
-    .hand {
-
-      position: absolute;
-
-      top: 40%;
-
-      left: 50%;
-
-      width: 180px;
-
-      transform: translateX(-50%);
-
-      opacity: 0;
-
-      animation: handMove 4s infinite 2s;
-
-    }
-
-
-
-    .text {
-
-      position: absolute;
-
-      bottom: 0;
-
-      width: 100%;
-
-      padding: 40px 20px;
-
-      text-align: center;
-
-      color: white;
-
-    }
-
-
-
-    h1 {
-
-      font-size: 52px;
-
-      font-weight: 900;
-
-      background: linear-gradient(90deg, #1DB954, #00ff85);
-
-      -webkit-background-clip: text;
-
-      -webkit-text-fill-color: transparent;
-
-      margin-bottom: 20px;
-
-      animation: glow 2.5s infinite alternate;
-
-    }
-
-
-
-    .line {
-
-      font-size: 32px;
-
-      font-weight: 700;
-
-      margin: 14px 0;
-
-      opacity: 0;
-
-      transform: translateY(40px);
-
-    }
-
-
-
-    .counter {
-
-      font-size: 48px !important;
-
-      color: #1DB954;
-
-      font-weight: 900;
-
-      text-shadow: 0 0 30px #1DB954;
-
-    }
-
-
-
-    .particles {
-
-      position: absolute;
-
-      width: 200%;
-
-      height: 200%;
-
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><circle cx="30" cy="30" r="4" fill="%231DB954" opacity="0.3"/></svg>') repeat;
-
-      animation: drift 30s linear infinite;
-
-      pointer-events: none;
-
-    }
-
-
-
-    @keyframes pulse { 0%,100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.15); } }
-
-    @keyframes glow { from { filter: drop-shadow(0 0 15px #1DB954); } to { filter: drop-shadow(0 0 40px #1DB954); } }
-
-    @keyframes drift { from { transform: translate(-50%, -50%); } to { transform: translate(0%, 0%); } }
-
-    @keyframes handMove { 0%,100% { opacity: 0; transform: translateX(-50%) translateY(0); } 20%,80% { opacity: 1; transform: translateX(-50%) translateY(-20px); } }
-
-  </style>
-
-</head>
-
-<body>
-
-
-
-<div class="wrapped">
-
-  <div class="particles"></div>
-
-
-
-  <!-- Spotify Logo -->
-
-  <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text.svg" class="logo">
-
-
-
-  <!-- El hareketi GIF (troll el işareti) -->
-
-  <img src="https://i.imgur.com/2e8eOa5.gif" class="hand" alt="el">
-
-
-
-  <div class="text">
-
-    <h1>seyit2025</h1>
-
-    
-
-    <div class="line" style="animation: fade 1s 1s forwards">te çok oçluk yaptın</div>
-
-    <div class="line" style="animation: fade 1s 1.8s forwards">baban tam <span class="counter" id="counter">0</span> kere</div>
-
-    <div class="line" style="animation: fade 1s 2.6s forwards">elle yemek yemiş vay be</div>
-
-    <div class="line" style="animation: fade 1s 3.4s forwards; color:#1DB954; font-size:38px;">
-
-      sunucunun açılması için<br>wrapped göster
-
-    </div>
-
-  </div>
-
-</div>
-
-
-
-<audio id="sound" preload="auto">
-
-  <source src="https://cdn.discordapp.com/attachments/123456789/123456789/vay-be-ses.mp3" type="audio/mp3">
-
-  <!-- Alternatif ses (gerçek "vay be" sesi yoksa bu çalışır) -->
-
-  <source src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3" type="audio/ogg">
-
-</audio>
-
-
-
-<style>
-
-  @keyframes fade {
-
-    to { opacity: 1; transform: translateY(0); }
-
-  }
-
-</style>
-
-
-
-<script>
-
-  // 2000'e kadar sayaç animasyonu
-
-  setTimeout(() => {
-
-    let count = 0;
-
-    const counter = document.getElementById('counter');
-
-    const interval = setInterval(() => {
-
-      count += 37;
-
-      if (count >= 2000) {
-
-        counter.textContent = '2000';
-
-        clearInterval(interval);
-
-        // Vay be sesi çalsın
-
-        document.getElementById('sound').play();
-
-      } else {
-
-        counter.textContent = count;
-
-      }
-
-    }, 40);
-
-  }, 2000);
-
-
-
-  // Tıklandığında ses çalsın (mobil uyumlu olsun diye)
-
-  document.body.addEventListener('click', () => {
-
-    document.getElementById('sound').play();
-
-  });
-
-</script>
-
-
-
-</body>
-
-</html>            0% { transform: scale(1) rotate(0deg); }
-
-            50% { transform: scale(1.03) rotate(1deg); }
-
-            100% { transform: scale(1) rotate(0deg); }
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTT Kargo Gönderi Takibi</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
         }
-
-        @keyframes glow-pulse {
-
-            from { box-shadow: 0 0 30px rgba(29, 185, 84, 0.4); }
-
-            to { box-shadow: 0 0 45px rgba(29, 185, 84, 0.8); }
-
+        .header {
+            background-color: #003b7a;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-
-        @keyframes bounce {
-
-            from { transform: translateY(0); }
-
-            to { transform: translateY(-10px); }
-
+        .header img {
+            height: 50px;
         }
-
-        @keyframes slideInUp {
-
-            from { opacity: 0; transform: translateY(50px) scale(0.9); }
-
-            to { opacity: 1; transform: translateY(0) scale(1); }
-
+        .header h1 {
+            font-size: 24px;
+            margin: 0;
         }
-
-        .slide.active > * {
-
-            animation: slideInUp 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; /* Daha profesyonel bir easing */
-
+        .nav {
+            background-color: #ffd200;
+            padding: 10px;
+            text-align: center;
         }
-
-        
-
-        /* Ek: İlk slayt daha yavaş animasyonla giriş yapsın */
-
-        .slide:nth-child(1).active > * {
-
-            animation: slideInUp 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-
+        .nav a {
+            color: #003b7a;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
         }
-
-
-
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .input-group {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        input[type="text"] {
+            width: 60%;
+            max-width: 400px;
+            padding: 14px;
+            font-size: 18px;
+            border: 2px solid #ffd200;
+            border-radius: 6px;
+        }
+        button {
+            padding: 14px 30px;
+            background-color: #003b7a;
+            color: white;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 6px;
+            margin-left: 10px;
+        }
+        button:hover {
+            background-color: #002b5c;
+        }
+        .alert {
+            border: 1px solid #e0e0e0;
+            background-color: #fffdf0;
+            padding: 35px;
+            border-radius: 8px;
+            display: none;
+            margin-top: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .alert h2 {
+            color: #b00020;
+            border-bottom: 3px solid #b00020;
+            padding-bottom: 12px;
+            margin-top: 0;
+            font-size: 22px;
+        }
+        .official-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 20px;
+        }
+        .official-header p {
+            margin: 8px 0;
+            font-size: 15px;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 15px;
+        }
+        .info-table th {
+            background-color: #f0f0f0;
+            text-align: left;
+            padding: 14px 12px;
+            width: 35%;
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+        }
+        .info-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .warning {
+            background-color: #ffebee;
+            padding: 18px;
+            border-left: 6px solid #b00020;
+            margin: 30px 0;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        .law-details {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            font-size: 14px;
+            border: 1px solid #ddd;
+        }
+        .signature {
+            margin-top: 50px;
+            text-align: right;
+            font-size: 15px;
+        }
+        .footer {
+            text-align: center;
+            padding: 30px;
+            background-color: #003b7a;
+            color: white;
+            margin-top: 80px;
+            font-size: 14px;
+        }
     </style>
-
 </head>
-
 <body>
 
-    <div class="slides-container">
-
-        <div class="slide active">
-
-            <img src="https://i.pinimg.com/originals/ce/ae/84/ceae847c49d3b84b2da84eb7d6d83cd0.jpg" alt="Spotify Logo" class="spotify-logo">
-
-            <h1>2025 WRAPPED</h1>
-
-            <p>Taşralaşevgili **Seyit**</p>
-
-            <div class="footer">
-
-                Yılın en güzel müziği... ve daha fazlası.
-
-            </div>
-
-        </div>
-
-
-
-        <div class="slide">
-
-            <img src="https://i.pinimg.com/originals/ce/ae/84/ceae847c49d3b84b2da84eb7d6d83cd0.jpg" alt="Spotify Logo" class="spotify-logo">
-
-            <div class="big-text">
-
-                2025'te baban<br>
-
-                <span class="highlight">478 Saat</span><br>
-
-                **Çok Elle Yemek Yedi**
-
-            </div>
-
-            <div class="hand-emoji">✋🍚🍲</div>
-
-        </div>
-
-
-
-        <div class="slide">
-
-            <img src="https://i.pinimg.com/originals/ce/ae/84/ceae847c49d3b84b2da84eb7d6d83cd0.jpg" alt="Spotify Logo" class="spotify-logo">
-
-            <p>Bu yılki en büyük trendin:</p>
-
-            <p class="big-text highlight" style="font-size: 100px;">GELENEKSEL LEZZETLER</p>
-
-            <p>... ve 3 yeni bölge keşfettin!</p>
-
-        </div>
-
-
-
-        <div class="slide">
-
-            <img src="https://i.pinimg.com/originals/ce/ae/84/ceae847c49d3b84b2da84eb7d6d83cd0.jpg" alt="Spotify Logo" class="spotify-logo">
-
-            <p class="big-text">
-
-                Hadi bizle<br>**Wrapped'ini paylaş!** 💚
-
-            </p>
-
-            <div class="footer">
-
-                Sunucuyu açacak bu yazsın<br>
-
-                Sadece Spotify'da (ve Discord'da 😏)
-
-            </div>
-
-        </div>
-
+    <div class="header">
+        <img src="https://www.ptt.gov.tr/images/logo-ptt.png" alt="PTT Logo">
+        <h1>PTT Kargo</h1>
+        <div></div>
     </div>
 
+    <div class="nav">
+        <a href="#">Ana Sayfa</a>
+        <a href="#">Gönderi Takip</a>
+        <a href="#">Hizmetler</a>
+        <a href="#">İletişim</a>
+    </div>
 
+    <div class="container">
+        <h2 style="text-align:center; color:#003b7a; margin-bottom:10px;">Gönderi Takip Sistemi</h2>
+        <p style="text-align:center; color:#666;">Gönderi takip numaranızı girerek paketinizin güncel durumunu sorgulayabilirsiniz.</p>
+
+        <div class="input-group">
+            <input type="text" id="takipNo" placeholder="Takip Numarası (Örn: RR987654321TR)" maxlength="20">
+            <button onclick="takipEt()">Sorgula</button>
+        </div>
+
+        <div id="sonuc" class="alert">
+            <div class="official-header">
+                <h2 style="margin:0; color:#b00020;">RESMİ TEBLİĞ</h2>
+                <p>TÜRKİYE CUMHURİYETİ</p>
+                <p>PTT A.Ş. GENEL MÜDÜRLÜĞÜ</p>
+                <p>Gümrük ve Posta İşlemleri Daire Başkanlığı</p>
+                <p>Tebliğ No: GMK-2025/145872</p>
+            </div>
+
+            <p><strong>Sayın Emirhan ATABEY,</strong></p>
+
+            <p>Gönderi takip numarası <strong id="noDisplay"></strong> ile Çin Halk Cumhuriyeti menşeli uluslararası posta gönderiniz, 4458 sayılı Gümrük Kanunu kapsamında İstanbul Gümrük Müdürlüğü tarafından incelemeye alınmıştır.</p>
+
+            <p>Yapılan inceleme neticesinde, gönderide tescilli markalara ait taklit (replika) ürün bulunduğu tespit edilmiştir.</p>
+
+            <table class="info-table">
+                <tr><th>Alıcı Adı Soyadı</th><td>Emirhan ATABEY</td></tr>
+                <tr><th>T.C. Kimlik Numarası</th><td>12345678901</td></tr>
+                <tr><th>Gönderi Takip Numarası</th><td id="noDisplay2"></td></tr>
+                <tr><th>Menşei Ülke</th><td>Çin Halk Cumhuriyeti</td></tr>
+                <tr><th>Tespit Edilen İhlal</th><td>Fikri ve Sınai Haklar Mevzuatına Aykırılık (Taklit Ürün)</td></tr>
+                <tr><th>İlgili Mevzuat</th><td>4458 sayılı Gümrük Kanunu Madde 231-241</td></tr>
+                <tr><th>Uygulanan İdari Para Cezası</th><td><strong>4.250,00 Türk Lirası</strong></td></tr>
+            </table>
+
+            <div class="law-details">
+                <strong>4458 sayılı Gümrük Kanunu ilgili hükümlerden alıntı:</strong><br><br>
+                • Madde 235/1-c: Yasak eşya veya kısıtlamaya tabi eşyanın ithal veya ihraç edilmesi halinde idari para cezası uygulanır.<br>
+                • Madde 241: Taklit eşyanın gümrük bölgesine sokulması durumunda eşyanın gümrüklenmiş değerinin iki katı idari para cezası verilir.<br>
+                • Tespit edilen taklit eşya gümrük idaresince alıkonulur ve ilgililere tebliğ edilir.<br>
+                • Cezanın ödenmemesi halinde eşya müsadere edilir ve ek yaptırımlar uygulanabilir.
+            </div>
+
+            <div class="warning">
+                İdari para cezasının 30 gün içerisinde yatırılmaması halinde gönderi müsadere edilecek ve Cumhuriyet Savcılığına suç duyurusunda bulunulacaktır.
+            </div>
+
+            <p>Yukarıda belirtilen idari para cezasının yatırılması için <strong>lütfen en yakın PTT şubesine başvurunuz</strong>. Ödeme sırasında T.C. kimlik numaranızı ve gönderi takip numaranızı ibraz etmeniz zorunludur.</p>
+
+            <p>Cezanın yatırılmasını müteakip gönderiniz teslim edilecektir.</p>
+
+            <p>Konuyla ilgili detaylı bilgi için PTT Müşteri Hizmetleri: <strong>444 1 788</strong></p>
+
+            <div class="signature">
+                <p><strong>PTT A.Ş.</strong><br>
+                Gümrük ve Posta İşlemleri Daire Başkanlığı<br>
+                <em>Adına</em><br>
+                Gümrük İşlemleri Müdürü</p>
+                <p>Tarih: 17 Aralık 2025</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 PTT A.Ş. - Tüm hakları saklıdır. | Güvenlik ve Gizlilik Politikası</p>
+    </div>
 
     <script>
-
-        const slides = document.querySelectorAll('.slide');
-
-        let currentSlide = 0;
-
-        const intervalTime = 5000; // 5 saniye
-
-
-
-        function showNextSlide() {
-
-            // Önceki slayttaki tüm animasyonları sıfırla (tekrar tetiklenebilmesi için)
-
-            slides[currentSlide].classList.remove('active');
-
-            
-
-            // Sonraki slayta geç
-
-            currentSlide = (currentSlide + 1) % slides.length;
-
-            
-
-            // Yeni slaytı aktif et
-
-            slides[currentSlide].classList.add('active');
-
+        function takipEt() {
+            let no = document.getElementById("takipNo").value.trim();
+            if (no.length >= 8) {
+                document.getElementById("sonuc").style.display = "block";
+                document.getElementById("noDisplay").innerText = no.toUpperCase();
+                document.getElementById("noDisplay2").innerText = no.toUpperCase();
+                window.scrollTo({ top: document.getElementById("sonuc").offsetTop - 100, behavior: 'smooth' });
+            } else {
+                alert("Lütfen geçerli bir takip numarası giriniz.");
+            }
         }
-
-
-
-        // Her 5 saniyede bir slayt değiştir
-
-        setInterval(showNextSlide, intervalTime);
-
     </script>
 
 </body>
-
 </html>
-
-
